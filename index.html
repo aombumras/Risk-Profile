@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Risk Profile หน่วยไตเทียม - สถาบันบำราศนราดูร</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --surface-2:#e8eef2; --ink:#16232b; --muted:#566771; --line:#cfd9df;
+  --accent:#0f5f7a; --accent-soft:#dcebf1;
+  --low:#1f9d55; --low-ink:#ffffff; --low-soft:#dff3e7;
+  --mod:#f4d21f; --mod-ink:#2b2400; --mod-soft:#fdf6cf;
+  --high:#f08a12; --high-ink:#2a1500; --high-soft:#fde7cc;
+  --ext:#d42020; --ext-ink:#ffffff; --ext-soft:#fadada;
+  --focus:#0f5f7a;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e171c; --surface:#15222a; --surface-2:#1c2c35; --ink:#e4edf1; --muted:#98abb5; --line:#2b3e48;
+    --accent:#6fc0dc; --accent-soft:#193642;
+    --low:#23a55d; --low-soft:#16321f; --mod:#e6c41b; --mod-soft:#3a3310;
+    --high:#ea8616; --high-soft:#3d2710; --ext:#d12a2a; --ext-soft:#3e1616; --focus:#6fc0dc;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#15222a; --surface-2:#1c2c35; --ink:#e4edf1; --muted:#98abb5; --line:#2b3e48;
+  --accent:#6fc0dc; --accent-soft:#193642;
+  --low:#23a55d; --low-soft:#16321f; --mod:#e6c41b; --mod-soft:#3a3310;
+  --high:#ea8616; --high-soft:#3d2710; --ext:#d12a2a; --ext-soft:#3e1616; --focus:#6fc0dc;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Sarabun","Leelawadee UI","Tahoma",sans-serif;font-size:16px;line-height:1.6;padding:0 16px}
+.wrap{max-width:1120px;margin:0 auto;padding-block:28px 56px;display:flex;flex-direction:column;gap:36px}
+h1,h2,h3{font-family:"IBM Plex Sans Thai","Sarabun",sans-serif;line-height:1.3;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.6rem,3.2vw,2.2rem);font-weight:700}
+h2{font-size:1.4rem;font-weight:600}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+.eyebrow{font-size:.8rem;letter-spacing:.06em;color:var(--accent);font-weight:600}
+header{display:flex;flex-direction:column;gap:8px;border-bottom:2px solid var(--line);padding-bottom:20px}
+header .sub{color:var(--muted);max-width:70ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs a{color:var(--accent);text-decoration:none;font-weight:600;font-size:.92rem;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.tabs a:hover{background:var(--accent-soft)}
+section{display:flex;flex-direction:column;gap:16px}
+.sec-head{display:flex;flex-direction:column;gap:4px}
+.sec-head p{color:var(--muted);max-width:75ch}
+
+/* matrix */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.scroll{overflow-x:auto}
+table.matrix{border-collapse:separate;border-spacing:3px;width:100%;min-width:640px;font-variant-numeric:tabular-nums}
+.matrix th,.matrix td{padding:8px 10px;text-align:center;vertical-align:middle;font-size:.9rem}
+.matrix thead th{background:var(--surface-2);font-weight:600}
+.matrix thead .cons-no{background:var(--accent);color:#fff;font-size:1.05rem}
+.matrix .axis{background:transparent;font-family:"IBM Plex Sans Thai",sans-serif;color:var(--accent);font-size:.95rem}
+.matrix .lk-no{background:var(--accent);color:#fff;font-weight:700;width:44px;font-size:1.05rem}
+.matrix .lk-txt{background:var(--surface-2);text-align:left;white-space:nowrap}
+.matrix .corner{background:transparent}
+.cell{border:0;border-radius:6px;cursor:pointer;min-height:64px;width:100%;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:8px 4px;transition:transform .12s ease, box-shadow .12s ease}
+.cell b{font-size:1.25rem;line-height:1.1}
+.cell span{font-size:.82rem}
+.cell:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.18)}
+.cell:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.cell[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:2px}
+.lv-low{background:var(--low);color:var(--low-ink)}
+.lv-mod{background:var(--mod);color:var(--mod-ink)}
+.lv-high{background:var(--high);color:var(--high-ink)}
+.lv-ext{background:var(--ext);color:var(--ext-ink)}
+.matrix td.pad{padding:0}
+.rot{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}
+
+/* calculator */
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;align-items:start}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:.92rem}
+select{font:inherit;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+select:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+.result{border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line)}
+.result .score{font-size:2rem;font-weight:700;font-family:"IBM Plex Sans Thai",sans-serif;line-height:1}
+.result .lv{font-weight:700;font-size:1.1rem}
+.result.rs-low{background:var(--low-soft);border-color:var(--low)}
+.result.rs-mod{background:var(--mod-soft);border-color:var(--mod)}
+.result.rs-high{background:var(--high-soft);border-color:var(--high)}
+.result.rs-ext{background:var(--ext-soft);border-color:var(--ext)}
+
+/* reference tables */
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+table.ref{border-collapse:collapse;width:100%;font-size:.92rem}
+.ref th,.ref td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.ref thead th{background:var(--surface-2);font-weight:600}
+.ref td.n{font-weight:700;text-align:center;width:52px;color:var(--accent);font-variant-numeric:tabular-nums}
+.ref td.code{font-weight:700;width:44px;text-align:center}
+.grp td{border-top:2px solid var(--line)}
+
+/* levels */
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.lvcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.lvcard .top{padding:14px 16px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.lvcard .top h3{font-size:1.15rem}
+.lvcard .top small{font-size:.85rem;font-weight:600;opacity:.9}
+.lvcard .body{padding:14px 16px;display:flex;flex-direction:column;gap:10px;font-size:.93rem}
+.lvcard dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 10px}
+.lvcard dt{color:var(--muted);font-weight:600;white-space:nowrap}
+.lvcard dd{margin:0}
+.lvcard ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
+.cells{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:.78rem;padding:1px 8px;border-radius:999px;background:var(--surface-2);font-variant-numeric:tabular-nums;border:1px solid var(--line)}
+.note{font-size:.88rem;color:var(--muted);border-left:3px solid var(--mod);padding:8px 12px;background:var(--surface);border-radius:0 8px 8px 0}
+footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.cell{transition:none}}
+
+/* ---------- register ---------- */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.toolbar .left,.toolbar .right{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:inherit;font-weight:600;font-size:.92rem;border-radius:8px;padding:8px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--surface-2)}
+.btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--ext);border-color:var(--ext)}
+.btn.small{padding:4px 10px;font-size:.84rem}
+a.btn{text-decoration:none;display:inline-flex;align-items:center}
+.btn.hrms{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.btn[disabled]{opacity:.55;cursor:wait}
+input[type=search],input[type=text],textarea{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%}
+input:focus-visible,textarea:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+textarea{min-height:78px;resize:vertical;line-height:1.5}
+.search{max-width:260px}
+.fchip{font:inherit;font-size:.85rem;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.fchip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.fchip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.sum .tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:2px;border-top:4px solid var(--line)}
+.sum .tile b{font-size:1.6rem;font-family:"IBM Plex Sans Thai",sans-serif;line-height:1.1;font-variant-numeric:tabular-nums}
+.sum .tile span{font-size:.85rem;color:var(--muted)}
+.sum .t-ext{border-top-color:var(--ext)} .sum .t-high{border-top-color:var(--high)} .sum .t-mod{border-top-color:var(--mod)} .sum .t-low{border-top-color:var(--low)}
+table.reg{border-collapse:collapse;width:100%;min-width:1080px;font-size:.9rem}
+.reg th{background:var(--accent);color:#fff;font-weight:600;padding:10px 8px;text-align:left;position:sticky;top:0;white-space:nowrap}
+.reg td{border-bottom:1px solid var(--line);padding:10px 8px;vertical-align:top}
+.reg tr:hover td{background:var(--surface-2)}
+.reg td.no{text-align:center;font-weight:700;color:var(--accent);width:52px;font-variant-numeric:tabular-nums}
+.reg td.topic{font-weight:600;min-width:200px}
+.reg td.long{min-width:170px;white-space:pre-wrap}
+.reg td.freq{min-width:110px}
+.reg .muted{color:var(--muted);font-size:.82rem}
+.empty{color:var(--muted);font-style:italic}
+.badge{display:inline-flex;flex-direction:column;align-items:center;border-radius:8px;padding:4px 10px;font-weight:700;font-size:.85rem;white-space:nowrap;line-height:1.3}
+.badge small{font-weight:500;font-size:.75rem}
+.badge.none{background:var(--surface-2);color:var(--muted);font-weight:500}
+.status{font-size:.88rem;color:var(--muted);display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.ok{background:var(--low)} .dot.err{background:var(--ext)} .dot.busy{background:var(--mod)}
+.cell .pins{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin-top:3px}
+.cell .pins em{font-style:normal;font-size:.7rem;font-weight:700;background:rgba(255,255,255,.85);color:#1a1a1a;border-radius:999px;padding:0 5px;min-width:18px}
+/* dialog */
+dialog{border:0;border-radius:14px;padding:0;width:min(720px,calc(100vw - 32px));max-height:calc(100vh - 32px);background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(10,20,26,.55)}
+.dlg{display:flex;flex-direction:column;max-height:calc(100vh - 32px)}
+.dlg header{padding:16px 20px;border-bottom:1px solid var(--line);flex-direction:row;justify-content:space-between;align-items:center}
+.dlg .content{padding:16px 20px;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.dlg footer{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;color:inherit;font-size:inherit}
+.dlg footer .r{display:flex;gap:8px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.hint{font-size:.84rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.lvprev{border-radius:10px;padding:10px 14px;font-weight:700}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;font-weight:600;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100vw - 32px)}
+
+/* ---------- layout & responsive ---------- */
+.explain-head{display:flex;flex-direction:column;gap:6px;border-top:2px solid var(--line);padding-top:28px}
+.explain-head p{color:var(--muted);max-width:75ch}
+#register{scroll-margin-top:12px}
+.reg td.act{text-align:right}
+@media (max-width:900px){
+  .wrap{gap:28px;padding-block:20px 40px}
+  .toolbar{flex-direction:column;align-items:stretch}
+  .toolbar .right{width:100%}
+  .search{max-width:none;flex:1 1 200px}
+}
+@media (max-width:760px){
+  body{font-size:15px}
+  .panel{padding:12px}
+  .sum{grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+  .sum .tile{padding:8px 10px}
+  .sum .tile b{font-size:1.35rem}
+  .fchip{padding:4px 10px;font-size:.8rem}
+  .toolbar .right .btn,.toolbar .right a.btn{flex:1 1 auto;justify-content:center;text-align:center}
+  /* matrix + reference */
+  .matrix th,.matrix td{padding:6px 5px;font-size:.78rem}
+  .matrix .lk-txt{white-space:normal;min-width:84px}
+  .cell{min-height:54px;padding:6px 2px}
+  .cell b{font-size:1.05rem}
+  .cell span{font-size:.68rem}
+  .ref-grid{grid-template-columns:1fr}
+  .ref th,.ref td{padding:6px 6px;font-size:.86rem}
+  .levels{grid-template-columns:1fr}
+  .calc{grid-template-columns:1fr}
+  .dlg header,.dlg .content,.dlg footer{padding-inline:14px}
+  .dlg footer{flex-direction:column-reverse;align-items:stretch}
+  .dlg footer .r{justify-content:stretch}
+  .dlg footer .r .btn{flex:1}
+}
+@media (max-width:560px){
+  table.matrix{min-width:0}
+  .matrix .lk-txt,.matrix .lk-h{display:none}
+  .matrix .lk-no{width:32px}
+  .matrix thead th{font-size:.7rem;padding:5px 3px}
+  .matrix .axis{font-size:.78rem}
+  .cell span:not(.pins){display:none}
+  .cell{min-height:48px}
+  .matrix-note{display:block}
+}
+.matrix-note{display:none;font-size:.8rem;color:var(--muted);margin-top:8px}
+@media (max-width:380px){
+  .sum{grid-template-columns:repeat(3,1fr)}
+  .tabs a{padding:5px 10px;font-size:.84rem}
+}
+
+.reg thead th{position:static}
+.reg thead tr:first-child th[rowspan]{vertical-align:bottom}
+.reg th.res-h{text-align:center;border-bottom:1px solid rgba(255,255,255,.35)}
+.reg thead tr+tr th{background:var(--accent);font-size:.82rem;text-align:center}
+.reg th small{font-weight:500;opacity:.85}
+.reg td.res{min-width:150px;white-space:pre-wrap}
+.ysel{display:inline-flex;align-items:center;gap:6px;font-size:.88rem;font-weight:600;color:var(--muted)}
+.ysel select{padding:7px 10px}
+.badge .sev{font-size:1.05rem}
+.resset{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0}
+.resset legend{font-weight:600;font-size:.92rem;padding:0 6px}
+.resgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.resgrid label{font-size:.85rem;font-weight:600}
+@media (max-width:760px){ table.reg td.res{grid-column:1 / -1;min-width:0} .ysel{flex:1 1 100%} .ysel select{flex:1} }
+
+/* ---------- editable register table ---------- */
+.reg-wrap{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:auto;max-height:78vh}
+table.reg{border-collapse:separate;border-spacing:0;width:100%;min-width:980px;font-size:.9rem}
+.reg thead th{position:sticky;top:0;z-index:3;background:var(--accent);color:#fff;font-weight:600;padding:9px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22);white-space:nowrap}
+.reg thead tr+tr th{top:39px;font-size:.88rem}
+.reg td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:0;vertical-align:top;background:var(--surface)}
+.reg td.no{text-align:center;font-weight:700;color:var(--accent);padding:10px 6px;width:56px;font-variant-numeric:tabular-nums}
+.reg th.c-no,.reg td.no{position:sticky;left:0;z-index:2}
+.reg thead th.c-no{z-index:4}
+.reg tbody tr:hover td{background:var(--surface-2)}
+.ed{min-height:42px;padding:10px 9px;white-space:pre-wrap;word-break:break-word;outline:none;line-height:1.5;border-radius:4px;transition:background .15s}
+.ed:empty::before{content:"—";color:var(--muted)}
+.ed:focus{background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--focus)}
+.ed.saving,.sevsel.saving{background:var(--mod-soft)}
+.ed.saved,.sevsel.saved{background:var(--low-soft)}
+.ed.err,.sevsel.err{background:var(--ext-soft)}
+.reg td.topic .ed{font-weight:600;min-width:210px}
+.reg td.w-l .ed{min-width:190px}
+.reg td.w-m .ed{min-width:110px}
+.reg td.res .ed{min-width:130px}
+.reg td.lv{width:92px;padding:6px;text-align:center;vertical-align:middle}
+.sevsel{font:inherit;font-weight:700;width:100%;min-width:64px;padding:6px 4px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-align:center;cursor:pointer}
+.sevsel.s1{background:var(--low);color:var(--low-ink);border-color:var(--low)}
+.sevsel.s2{background:var(--mod);color:var(--mod-ink);border-color:var(--mod)}
+.sevsel.s3{background:var(--high);color:var(--high-ink);border-color:var(--high)}
+.sevsel.s4,.sevsel.s5{background:var(--ext);color:var(--ext-ink);border-color:var(--ext)}
+.sevsel:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+.reg td.act{width:118px;text-align:center;vertical-align:middle;padding:4px;white-space:nowrap}
+.editbtn{font:inherit;font-size:.82rem;font-weight:600;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:7px;padding:5px 9px;cursor:pointer;margin-right:4px}
+.editbtn:hover{background:var(--accent);color:#fff}
+.editbtn:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+.ed{cursor:text}
+.ed:hover{box-shadow:inset 0 0 0 1px var(--accent)}
+.reg-wrap.loading{opacity:.55;pointer-events:none}
+.resset{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0}
+.resset legend{font-weight:600;font-size:.92rem;padding:0 6px}
+.resgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.delbtn{font:inherit;border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;padding:4px 7px;font-size:1rem;line-height:1}
+.delbtn:hover{color:var(--ext);background:var(--ext-soft)}
+.delbtn:focus-visible{outline:3px solid var(--focus)}
+.confirm-row td{background:var(--ext-soft)!important}
+.confirm-row .cbox{padding:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.help{font-size:.86rem;color:var(--muted)}
+.legend-sev{display:flex;flex-wrap:wrap;gap:6px;font-size:.8rem;color:var(--muted);align-items:center}
+.legend-sev i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:3px}
+@media (max-width:760px){
+  table.reg{min-width:860px;font-size:.84rem}
+  .reg-wrap{max-height:none}
+  .reg td.topic .ed{min-width:170px}
+  .reg td.w-l .ed{min-width:160px}
+  .reg td.res .ed{min-width:110px}
+}
+
+/* ---------- compact table + detail modal ---------- */
+.reg-wrap{overflow:visible;max-height:none;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table.reg{min-width:0;width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:.8rem}
+col.w-no{width:4%} col.w-topic{width:16.5%} col.w-meas{width:24%} col.w-kpi{width:20%} col.w-freq{width:6%} col.w-lv{width:9%} col.w-res{width:5%} col.w-act{width:5.5%}
+.reg thead th{position:sticky;top:0;z-index:3;background:var(--accent);color:#fff;font-weight:600;padding:7px 3px;font-size:.78rem;text-align:center;white-space:normal;line-height:1.25;height:34px;border-right:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.2)}
+.reg thead tr+tr th{top:34px;height:auto;padding:4px 2px}
+.reg tbody tr{cursor:pointer}
+.reg tbody tr:hover td{background:var(--accent-soft)}
+.reg td{padding:7px 5px;vertical-align:top;border-bottom:1px solid var(--line);border-right:1px solid var(--line);background:var(--surface);overflow:hidden}
+.reg td.no{text-align:center;font-weight:700;color:var(--accent);padding:7px 2px}
+.reg td.topic{font-weight:600}
+.reg td.res{text-align:center;font-size:.76rem;padding:7px 2px}
+.reg td.lv{text-align:center;padding:6px 2px}
+.clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;white-space:pre-line;word-break:break-word;overflow-wrap:anywhere}
+.reg td.res .clamp{-webkit-line-clamp:2}
+.empty{color:var(--muted)}
+.sevchip{display:inline-block;min-width:26px;padding:2px 6px;border-radius:6px;font-weight:700;font-size:.8rem;background:var(--surface-2);color:var(--muted)}
+.sevchip.s1{background:var(--low);color:var(--low-ink)} .sevchip.s2{background:var(--mod);color:var(--mod-ink)} .sevchip.s3{background:var(--high);color:var(--high-ink)} .sevchip.s4,.sevchip.s5{background:var(--ext);color:var(--ext-ink)}
+.reg td.act{text-align:center;vertical-align:middle;padding:4px 2px}
+.eyebtn{border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:8px;width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.eyebtn:hover{background:var(--accent);color:#fff}
+.eyebtn:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+.eyebtn svg{width:17px;height:17px}
+@media (max-width:1000px){ .c-freq{display:none} col.w-freq{width:0} col.w-meas{width:25%} col.w-kpi{width:20%} }
+@media (max-width:640px){
+  .c-meas,.c-kpi,.c-freq{display:none}
+  col.w-meas,col.w-kpi,col.w-freq{width:0} col.w-no{width:9%} col.w-topic{width:37%} col.w-lv{width:15%} col.w-res{width:9%} col.w-act{width:10%}
+  table.reg{font-size:.78rem}
+  .reg thead th{font-size:.72rem;padding:6px 2px}
+  .eyebtn{width:28px;height:28px}
+}
+.reg td.freq{text-align:center;vertical-align:middle}
+.reg td.freq b{display:block;font-size:1.05rem;color:var(--accent);line-height:1.1}
+.reg td.freq small{font-size:.7rem;color:var(--muted)}
+.cnts{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}
+.sevchip i{font-style:normal;font-weight:600;font-size:.7rem;margin-left:1px;opacity:.9}
+.autofreq{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border:1px dashed var(--line);border-radius:8px;background:var(--surface-2);min-height:42px}
+.autofreq b{font-size:1.2rem;color:var(--accent)}
+/* modal card */
+dialog#dlg{width:min(760px,calc(100vw - 24px))}
+.dlg .content{gap:12px}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){ .dgrid{grid-template-columns:1fr} .dlg header,.dlg .content,.dlg footer{padding-inline:14px} }
+.dlg textarea{min-height:92px}
+.resset{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0}
+.resset legend{font-weight:600;font-size:.92rem;padding:0 6px}
+.resgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.resgrid textarea{min-height:60px}
+.addyear{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:.88rem}
+.addyear input{width:110px}
+.dlg .field{min-width:0} .dlg input,.dlg select,.dlg textarea{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+.cur-tag{font-size:.72rem;color:var(--accent);font-weight:600}
+
+/* ================= ทะเบียนความเสี่ยง (อุบัติการณ์) — scoped under .inc ================= */
+.inc{
+  --pri:#0f766e; --pri2:#115e59; --pri-soft:#ccfbf1;
+  --card:#fff; --iline:#e2e8f0; --txt:#1e293b; --mut:#64748b; --err:#be123c;
+  --r:18px; --shadow:0 4px 18px rgba(15,23,42,.06);
+  font-family:'Sarabun',sans-serif;font-size:16px;line-height:1.5;display:block;color:var(--txt)
+}
+.inc h2,.inc h3{font-family:'Prompt','Sarabun',sans-serif;font-weight:600}
+.inc .sec-title{display:flex;align-items:center;gap:8px;margin:18px 2px 10px;font-size:1.05rem;color:var(--ink);font-family:'Prompt','Sarabun',sans-serif;font-weight:600}
+.inc .sec-title:first-child{margin-top:0}
+.inc .sec-title small{color:var(--muted);font-weight:400;font-family:'Sarabun'}
+.inc .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.inc .sec-title .tot{font-family:'Sarabun';font-size:.85rem;font-weight:700;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:1px 10px}
+.inc .sec-title.sub{font-size:.98rem;margin-top:14px}
+.inc .stat{position:relative;border-radius:14px;padding:12px 14px 11px;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 60%),var(--c);cursor:pointer;overflow:hidden;
+  border:1px solid rgba(15,23,42,.06);border-bottom:3px solid var(--d);
+  box-shadow:0 1px 2px rgba(15,23,42,.08),0 6px 14px -4px rgba(15,23,42,.14),inset 0 1px 0 rgba(255,255,255,.8);
+  transition:transform .15s,box-shadow .15s;min-height:0}
+.inc .stat:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(15,23,42,.08),0 14px 26px -6px rgba(15,23,42,.22),inset 0 1px 0 rgba(255,255,255,.8)}
+.inc .stat.on{outline:2px solid var(--d);outline-offset:2px}
+.inc .stat .top{display:flex;align-items:center;gap:10px;position:relative;z-index:1}
+.inc .stat .ic{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.85);display:grid;place-items:center;color:var(--d);font-size:17px;flex:none;box-shadow:0 2px 6px rgba(15,23,42,.1)}
+.inc .stat .num{font-family:'Prompt';font-size:1.7rem;line-height:1;color:var(--d)}
+.inc .stat .num span{font-size:.82rem;font-family:'Sarabun';color:#475569;margin-left:4px}
+.inc .stat .lb{font-weight:700;color:#334155;margin-top:8px;font-size:.92rem;position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inc .stat .lb small{font-weight:500;color:#475569}
+.inc .stat .lv{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:'Prompt';font-size:2.8rem;color:var(--d);opacity:.13;line-height:1}
+@media(max-width:480px){.inc .stats{grid-template-columns:repeat(2,1fr);gap:10px}.inc .stat{padding:10px 11px 9px}.inc .stat .num{font-size:1.45rem}.inc .stat .ic{width:32px;height:32px;font-size:15px}}
+
+.inc .card{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.inc .card + .card{margin-top:18px}
+.inc .card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.inc .card-h h2{margin:0;font-size:1.1rem;color:var(--pri2);display:flex;align-items:center;gap:8px}
+.inc .editbar{display:none;align-items:center;gap:10px;background:#fef3c7;color:#92400e;border-radius:12px;padding:10px 14px;margin-bottom:14px;font-weight:600}
+.inc .editbar.show{display:flex}
+.inc .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.inc .full{grid-column:1/-1}
+.inc .grid > div{min-width:0}
+@media(max-width:720px){.inc .grid{grid-template-columns:1fr}}
+.inc label{display:block;font-weight:600;margin-bottom:5px;font-size:.95rem}
+.inc label .no{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--pri-soft);color:var(--pri2);font-size:.78rem;margin-right:6px}
+.inc label .req{color:var(--err)}
+.inc label .no.rp{width:auto;border-radius:8px;padding:0 6px;background:#0f5f7a;color:#fff}
+.inc td.det .rptag{display:inline-block;margin-top:4px;font-size:.78rem;font-weight:600;color:#0f5f7a;background:#dcebf1;border-radius:6px;padding:1px 7px}
+.inc input,.inc select,.inc textarea{width:100%;max-width:100%;padding:10px 12px;border:1.5px solid var(--iline);border-radius:12px;font:inherit;background:#fff;color:var(--txt)}
+.inc textarea{min-height:92px;resize:vertical}
+.inc input:focus,.inc select:focus,.inc textarea:focus,.inc input:focus-visible,.inc select:focus-visible,.inc textarea:focus-visible{outline:none;border-color:#5eead4;box-shadow:0 0 0 4px #ccfbf1}
+.inc .hint{display:block;color:var(--mut);font-size:.85rem;margin-top:4px}
+.inc .drop{border:2px dashed #cbd5e1;border-radius:14px;padding:16px;text-align:center;cursor:pointer;color:var(--mut);background:#fafafa}
+.inc .drop:hover{border-color:#5eead4;color:var(--pri);background:#f0fdfa}
+.inc .drop i{font-size:1.3rem;display:block;margin-bottom:4px}
+.inc .thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.inc .thumb{position:relative;width:88px;height:88px;border-radius:12px;overflow:hidden;border:1px solid var(--iline);background:#f8fafc;display:flex;align-items:center;justify-content:center;font-size:.72rem;text-align:center;padding:4px;word-break:break-all}
+.inc .thumb img{width:100%;height:100%;object-fit:cover}
+.inc .thumb button{position:absolute;top:3px;right:3px;border:0;background:rgba(15,23,42,.65);color:#fff;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px}
+.inc .thumb.old{outline:2px solid #fde68a}
+.inc .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:13px 18px;font:inherit;font-weight:700;cursor:pointer;background:#fff;color:#334155}
+.inc .btn-pri{background:linear-gradient(135deg,#14b8a6,#0f766e);color:#fff;width:100%;font-size:1.05rem}
+.inc .btn-pri:hover{background:linear-gradient(135deg,#14b8a6,#0f766e);filter:brightness(1.05)}
+.inc .btn-pri:disabled{opacity:.6;cursor:wait}
+.inc .btn-ghost{background:#fff;border:1.5px solid var(--iline);color:#334155;padding:9px 14px}
+.inc .btn-ghost:hover{background:#fff;border-color:#5eead4;color:var(--pri)}
+.inc .hide{display:none!important}
+
+.inc .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.inc .search{position:relative;max-width:none}
+.inc .search i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--mut)}
+.inc .search input{padding-left:36px;width:230px}
+.inc .chip{display:inline-flex;align-items:center;gap:6px;background:var(--pri-soft);color:var(--pri2);border:0;border-radius:999px;padding:5px 12px;font-size:.88rem;font-weight:600}
+.inc .chip button{border:0;background:none;color:inherit;cursor:pointer;padding:0}
+.inc table{width:100%;border-collapse:separate;border-spacing:0}
+.inc th{background:#f0fdfa;color:var(--pri2);text-align:left;padding:11px 12px;font-family:'Prompt';font-weight:500;font-size:.93rem;white-space:nowrap}
+.inc th:first-child{border-top-left-radius:12px} .inc th:last-child{border-top-right-radius:12px}
+.inc td{padding:12px;border-bottom:1px solid var(--iline);vertical-align:top}
+.inc tr:hover td{background:#fafcff}
+.inc td.date{white-space:nowrap;width:120px;color:#334155;font-weight:600}
+.inc td.unit{width:150px}
+.inc td.det .txt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.inc td.det .topic{color:var(--mut);font-size:.85rem;margin-top:3px}
+.inc td.act{width:150px;white-space:nowrap;text-align:center}
+.inc .sev{display:inline-grid;place-items:center;min-width:26px;height:22px;padding:0 7px;border-radius:8px;font-weight:700;font-size:.8rem;margin-right:6px;background:var(--c,#eee);color:var(--d,#333);vertical-align:1px}
+.inc .ib{width:36px;height:36px;border-radius:12px;border:0;cursor:pointer;font-size:15px;margin:0 2px;transition:transform .12s}
+.inc .ib:hover{transform:scale(1.08)}
+.inc .ib.v{background:#e0f2fe;color:#0369a1} .inc .ib.e{background:#fef3c7;color:#b45309} .inc .ib.d{background:#ffe4e6;color:#be123c}
+.inc tr.new td{background:#fefce8}
+.inc .empty{padding:28px;text-align:center;color:var(--mut);font-style:normal}
+.inc .more{display:flex;justify-content:center;margin-top:14px}
+@media(max-width:680px){
+  .inc .search input{width:100%}
+  .inc .search{flex:1}
+  .inc thead{display:none}
+  .inc table,.inc tbody,.inc tr,.inc td{display:block;width:100%}
+  .inc tr{border:1px solid var(--iline);border-radius:16px;margin-bottom:10px;padding:6px 4px;background:#fff}
+  .inc td{border:0;padding:6px 10px}
+  .inc td.date,.inc td.unit,.inc td.act{width:auto}
+  .inc td.date,.inc td.unit{display:inline-block;width:auto;padding-bottom:2px}
+  .inc td.date::before{content:"\f133";font-family:"Font Awesome 6 Free";font-weight:900;margin-right:6px;color:var(--pri)}
+  .inc td.unit::before{content:"\f1ad";font-family:"Font Awesome 6 Free";font-weight:900;margin-right:6px;color:var(--pri)}
+  .inc td.act{text-align:right;border-top:1px dashed var(--iline);margin-top:4px;padding-top:8px}
+}
+
+.inc .modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.inc .modal.show{display:flex}
+.inc .mbox{background:#fff;color:var(--txt);border-radius:22px;width:100%;max-width:720px;max-height:90vh;overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.2);animation:incpop .18s ease-out}
+.inc .mbox.sm{max-width:400px}
+@keyframes incpop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.inc .mhead{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--iline);position:sticky;top:0;background:#fff;z-index:1}
+.inc .mhead h3{margin:0;font-size:1.08rem;color:var(--pri2);display:flex;gap:8px;align-items:center}
+.inc .mclose{border:0;background:#f1f5f9;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px}
+.inc .mbody{padding:18px 20px}
+.inc .dl{display:grid;grid-template-columns:200px 1fr;gap:0}
+.inc .dl div{padding:9px 4px;border-bottom:1px solid #f1f5f9}
+.inc .dl .k{color:var(--mut);font-size:.9rem}
+.inc .dl .v{white-space:pre-wrap;word-break:break-word}
+@media(max-width:560px){.inc .dl{grid-template-columns:1fr}.inc .dl .k{border-bottom:0;padding-bottom:0}}
+.inc .dl img{max-width:100%;max-height:320px;border-radius:12px;display:block}
+.inc .dl a{color:var(--pri)}
+.inc .mfoot{display:flex;gap:10px;justify-content:flex-end;padding:0 20px 18px}
+.inc .lock{width:64px;height:64px;border-radius:20px;background:#ffe4e6;color:#be123c;display:grid;place-items:center;font-size:26px;margin:0 auto 10px}
+.inc .btn-del{background:#e11d48;color:#fff}
+.inc .btn-del:hover{background:#be123c}
+
+.inc .itoast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);background:#0f172a;color:#fff;padding:12px 18px;border-radius:14px;opacity:0;transition:.25s;z-index:60;display:flex;gap:10px;align-items:center;max-width:92vw;pointer-events:none}
+.inc .itoast.show{opacity:1;transform:translateX(-50%)}
+.inc .itoast.ok i{color:#5eead4} .inc .itoast.bad i{color:#fda4af}
+.inc .spin{animation:incsp 1s linear infinite} @keyframes incsp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">สถาบันบำราศนราดูร · กลุ่มการพยาบาล</div>
+    <h1>ระบบ Risk Profile หน่วยไตเทียม</h1>
+    <nav class="tabs" aria-label="ส่วนของหน้า">
+      <a href="#incStats">สถิติ</a>
+      <a href="#register">ตาราง Risk Profile</a>
+      <a href="#incForm">บันทึกความเสี่ยง</a>
+      <a href="#tableCard">ทะเบียนความเสี่ยง</a>
+      <a href="#matrix">Risk Matrix</a>
+      <a href="#calc">ประเมินความเสี่ยง</a>
+      <a href="#criteria">เกณฑ์การให้คะแนน</a>
+      <a href="#levels">ระดับความเสี่ยง</a>
+    </nav>
+    <div><a class="btn hrms" href="https://bidi.thai-nrls.org/" target="_blank" rel="noopener">รายงานความเสี่ยงในโปรแกรม HRMS (สรพ.) ↗</a></div>
+  </header>
+
+  <section id="incStats" class="inc" aria-label="สถิติความเสี่ยง">
+    <div class="sec-title"><i class="fa-solid fa-chart-simple" style="color:#0f766e"></i> สถิติตามระดับความรุนแรง <span class="tot" id="statTotal">0 เรื่อง</span> <small id="statSrc">(แตะการ์ดเพื่อกรองตารางทะเบียนความเสี่ยง)</small></div>
+    <div class="sec-title sub"><i class="fa-solid fa-user-nurse" style="color:#0369a1"></i> ด้านคลินิก <small>ระดับ A–I</small> <span class="tot" id="statClinN">0 เรื่อง</span></div>
+    <div class="stats" id="statsClin"></div>
+    <div class="sec-title sub"><i class="fa-solid fa-building-shield" style="color:#7c3aed"></i> ด้านทั่วไป <small>ระดับ 1–5</small> <span class="tot" id="statGenN">0 เรื่อง</span></div>
+    <div class="stats" id="statsGen"></div>
+  </section>
+
+  <section id="register">
+    <div class="sec-head">
+      <h2>ตาราง Risk Profile หน่วยไตเทียม</h2>
+    </div>
+    <div class="toolbar">
+      <div class="left">
+        <div class="status" id="status"><span class="dot busy"></span><span>กำลังโหลดข้อมูลจากชีต…</span></div>
+      </div>
+      <div class="right">
+        <a class="btn hrms" href="https://bidi.thai-nrls.org/" target="_blank" rel="noopener">รายงานความเสี่ยงในโปรแกรม HRMS (สรพ.) ↗</a>
+        <button type="button" class="btn" id="btnReload">โหลดข้อมูลใหม่</button>
+        <button type="button" class="btn primary" id="btnAdd">+ เพิ่มหัวข้อ</button>
+      </div>
+    </div>
+    <div class="reg-wrap" role="region" aria-label="ตาราง Risk Profile" tabindex="0">
+      <table class="reg">
+        <colgroup><col class="w-no"><col class="w-topic"><col class="w-meas c-meas"><col class="w-kpi c-kpi"><col class="w-freq c-freq"><col class="w-lv"><col class="w-res"><col class="w-res"><col class="w-res"><col class="w-act"></colgroup>
+        <thead>
+          <tr>
+            <th rowspan="2" class="c-no">ลำดับ</th><th rowspan="2">หัวข้อ</th><th rowspan="2" class="c-meas">มาตรการป้องกัน</th><th rowspan="2" class="c-kpi">ตัวชี้วัด</th><th rowspan="2" class="c-freq">ความถี่</th><th rowspan="2">ระดับ</th><th colspan="3">ผลลัพธ์</th><th rowspan="2">แก้ไข</th>
+          </tr>
+          <tr id="resYears"></tr>
+        </thead>
+        <tbody id="regBody"></tbody>
+      </table>
+    </div>
+    <div class="legend-sev" id="sevLegend"></div>
+  </section>
+
+  <div id="incMain" class="inc">
+  <!-- ========== แบบฟอร์มบันทึกความเสี่ยง ========== -->
+  <form id="incForm" class="card" onsubmit="INC.send(event)" autocomplete="off">
+    <div class="card-h"><h2><i class="fa-solid fa-pen-to-square"></i> <span id="formTitle">บันทึกรายงานอุบัติการณ์</span></h2></div>
+    <div class="editbar" id="editBar"><i class="fa-solid fa-pencil"></i> <span id="editText">กำลังแก้ไข</span>
+      <button type="button" class="btn btn-ghost" style="margin-left:auto" onclick="INC.cancelEdit()"><i class="fa-solid fa-xmark"></i> ยกเลิก</button></div>
+    <div class="grid">
+      <div><label><span class="no">1</span>วันที่บันทึกรายงานอุบัติการณ์ <span class="req">*</span></label>
+        <input type="date" name="reportDate" required></div>
+      <div><label><span class="no">2</span>หน่วยงานที่ค้นพบ/บันทึกรายงาน <span class="req">*</span></label>
+        <input name="unit" value="ไตเทียม 4/2" required></div>
+      <div class="full"><label><span class="no">3</span>ประเภทสถานที่ <span class="req">*</span></label>
+        <select name="placeType" id="selPlace" required></select></div>
+      <div class="full"><label><span class="no">4</span>รายละเอียดการเกิดเหตุ <span class="req">*</span></label>
+        <textarea name="details" required></textarea>
+        <div class="hint">กรณีเป็นความเสี่ยงด้านยา ให้ระบุชื่อยาที่เกิดปัญหาด้วย</div></div>
+      <div class="full"><label><span class="no">5</span>รูปภาพ</label>
+        <div class="drop" onclick="document.getElementById('inImg').click()"><i class="fa-solid fa-camera"></i>แตะเพื่อถ่ายรูปหรือเลือกรูป (เลือกได้หลายรูป)</div>
+        <input id="inImg" type="file" accept="image/*" multiple class="hide" onchange="INC.addImages(this.files);this.value=''">
+        <div id="imgBox" class="thumbs"></div></div>
+      <div class="full"><label><span class="no">6</span>เป็นอุบัติการณ์เรื่องใด <span class="req">*</span></label>
+        <input name="topic" id="inTopic" list="dlTopic" required placeholder="พิมพ์รหัสหรือคำค้น เช่น CPP405, ตกเตียง, เข็ม, ยา">
+        <datalist id="dlTopic"></datalist></div>
+      <div><label><span class="no">7</span>ระดับความรุนแรง <span class="req">*</span></label>
+        <select name="severity" id="selSev" required></select>
+        <div class="hint" id="sevHint"></div></div>
+      <div><label><span class="no">8</span>ผู้ที่ได้รับผลกระทบ <span class="req">*</span></label>
+        <select name="affected" id="selAff" required></select></div>
+      <div><label><span class="no">9</span>วันที่เกิดอุบัติการณ์ <span class="req">*</span></label>
+        <input type="date" name="eventDate" required></div>
+      <div><label><span class="no">10</span>วันที่ค้นพบว่าเกิดอุบัติการณ์ <span class="req">*</span></label>
+        <input type="date" name="foundDate" required></div>
+      <div><label><span class="no">11</span>ช่วงเวลาที่เกิดอุบัติการณ์ เวร</label>
+        <select name="shift" id="selShift"></select></div>
+      <div><label><span class="no">12</span>หรือ เวลา</label>
+        <input type="time" name="time"></div>
+      <div class="full"><label><span class="no">13</span>แหล่งที่มา/วิธีการค้นพบอุบัติการณ์ <span class="req">*</span></label>
+        <input name="source" list="dlSource" required placeholder="เลือกหรือพิมพ์">
+        <datalist id="dlSource"></datalist></div>
+      <div class="full"><label><span class="no">14</span>การจัดการเบื้องต้น <span class="req">*</span></label>
+        <textarea name="action" required></textarea></div>
+      <div class="full"><label><span class="no">15</span>แนบไฟล์</label>
+        <div class="drop" onclick="document.getElementById('inFile').click()"><i class="fa-solid fa-paperclip"></i>แตะเพื่อเลือกไฟล์ (PDF, Word, Excel ฯลฯ)</div>
+        <input id="inFile" type="file" multiple class="hide" onchange="INC.addFiles(this.files);this.value=''">
+        <div id="fileBox" class="thumbs"></div></div>
+    </div>
+    <div style="margin-top:18px"><button id="incBtn" class="btn btn-pri" type="submit"><i class="fa-solid fa-floppy-disk"></i> <span>บันทึกข้อมูล</span></button></div>
+  </form>
+
+  <!-- ========== ตารางทะเบียนความเสี่ยง ========== -->
+  <div class="card" id="tableCard">
+    <div class="card-h">
+      <h2><i class="fa-solid fa-table-list"></i> ทะเบียนความเสี่ยง <span class="chip" id="countChip">0 เรื่อง</span></h2>
+      <div class="tools">
+        <span class="chip hide" id="filterChip"></span>
+        <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="incQ" placeholder="ค้นหารายละเอียด/หน่วยงาน"></div>
+        <button class="btn btn-ghost" type="button" onclick="INC.loadData()" title="รีเฟรช"><i class="fa-solid fa-rotate" id="reloadIc"></i></button>
+      </div>
+    </div>
+    <div id="tableBox" class="empty"><i class="fa-solid fa-spinner spin"></i> กำลังโหลด...</div>
+    <div class="more hide" id="moreBox"><button class="btn btn-ghost" type="button" onclick="INC.more()">แสดงเพิ่ม <i class="fa-solid fa-chevron-down"></i></button></div>
+  </div>
+
+  <!-- หน้าต่างดูรายละเอียด -->
+  <div class="modal" id="mView" onclick="if(event.target===this)INC.closeM('mView')">
+    <div class="mbox">
+      <div class="mhead"><h3><i class="fa-solid fa-file-lines"></i> รายละเอียดอุบัติการณ์</h3><button type="button" class="mclose" onclick="INC.closeM('mView')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="mbody"><div class="dl" id="viewBody"></div></div>
+      <div class="mfoot"><button type="button" class="btn btn-ghost" id="viewEdit"><i class="fa-solid fa-pen"></i> แก้ไข</button></div>
+    </div>
+  </div>
+
+  <!-- หน้าต่างลบ (ใส่รหัสผ่าน) -->
+  <div class="modal" id="mDel" onclick="if(event.target===this)INC.closeM('mDel')">
+    <div class="mbox sm">
+      <div class="mbody" style="text-align:center;padding-top:24px">
+        <div class="lock"><i class="fa-solid fa-lock"></i></div>
+        <h3 style="margin:0 0 6px">ยืนยันการลบรายการ</h3>
+        <p style="margin:0 0 14px;color:var(--mut)" id="delText"></p>
+        <input type="password" id="delPass" placeholder="ใส่รหัสผ่านเพื่อลบ" inputmode="numeric" style="text-align:center">
+        <div class="hint" id="delErr" style="color:var(--err);min-height:1.2em"></div>
+      </div>
+      <div class="mfoot" style="justify-content:center">
+        <button type="button" class="btn btn-ghost" onclick="INC.closeM('mDel')">ยกเลิก</button>
+        <button type="button" class="btn btn-del" id="delBtn" onclick="INC.doDelete()"><i class="fa-solid fa-trash"></i> ลบรายการ</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="itoast" id="incToast"><i class="fa-solid fa-circle-check"></i><span></span></div>
+  </div>
+
+  <div class="explain-head" id="explain">
+    <div class="eyebrow">คำอธิบาย</div>
+    <h2>เกณฑ์การประเมินความเสี่ยง</h2>
+    <p>Risk Matrix เกณฑ์การให้คะแนน และระดับความเสี่ยง ใช้ประกอบการกรอกตาราง Risk Profile ด้านบน</p>
+  </div>
+
+  <section id="matrix">
+    <div class="sec-head">
+      <h2>ตาราง Risk Matrix (ฉบับปรับใหม่)</h2>
+      <p>คะแนนความเสี่ยง = โอกาสเกิด × ผลกระทบ ระดับของแต่ละช่องกำหนดตามตาราง ตัวเลขวงกลมในช่องคือลำดับที่ของความเสี่ยงที่ประเมินแล้ว กดที่ช่องเพื่อกรองตาราง Risk Profile ด้านบน</p>
+    </div>
+    <div class="panel scroll">
+      <table class="matrix" id="matrixTable"></table>
+      <p class="matrix-note">หน้าจอเล็กแสดงเฉพาะคะแนนและสีระดับ ดูเกณฑ์โอกาสเกิดได้ที่ตาราง “เกณฑ์การให้คะแนน” ด้านล่าง</p>
+    </div>
+  </section>
+
+  <section id="calc">
+    <div class="sec-head">
+      <h2>ประเมินความเสี่ยง</h2>
+      <p>เลือกโอกาสเกิดและระดับผลกระทบ ระบบจะแสดงคะแนนและระดับความเสี่ยงพร้อมแนวทางจัดการ</p>
+    </div>
+    <div class="panel calc">
+      <div class="field">
+        <label for="selL">โอกาสเกิด (Likelihood)</label>
+        <select id="selL"></select>
+      </div>
+      <div class="field">
+        <label for="selC">ผลกระทบ (Consequence)</label>
+        <select id="selC"></select>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="criteria">
+    <div class="sec-head">
+      <h2>เกณฑ์การให้คะแนน</h2>
+      <p>ผลกระทบแบ่งตามระดับความรุนแรงของอุบัติการณ์ A–I และมูลค่าความเสียหาย (บาท) ส่วนโอกาสเกิดแบ่งตามความถี่ต่อปีและต่อไตรมาส</p>
+    </div>
+    <div class="ref-grid">
+      <div class="panel">
+        <h3 style="margin-bottom:10px">ผลกระทบ (Consequence)</h3>
+        <table class="ref" id="consTable"></table>
+      </div>
+      <div class="panel">
+        <h3 style="margin-bottom:10px">โอกาสเกิด (Likelihood)</h3>
+        <table class="ref" id="lkTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <section id="levels">
+    <div class="sec-head">
+      <h2>ระดับความเสี่ยง</h2>
+      <p>แบ่งเป็น 4 ระดับ แต่ละระดับกำหนดผู้รับผิดชอบ กรอบเวลา และการดำเนินการ</p>
+    </div>
+    <div class="levels" id="levelCards"></div>
+    <p class="note">แนวทางการจัดการและกรอบเวลาในแต่ละระดับเป็นร่างเสนอ ควรปรับให้ตรงกับระเบียบการบริหารความเสี่ยงของสถาบันก่อนใช้งานจริง</p>
+  </section>
+
+  <footer>อ้างอิง: ตาราง Risk Matrix ฉบับปรับใหม่ หน่วยไตเทียม · ระดับความรุนแรงของอุบัติการณ์ A–I (ศูนย์พัฒนาคุณภาพ โรงพยาบาลค่ายวชิราวุธ)</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <form class="dlg" id="frm" method="dialog">
+    <header><h3 id="dlgTitle">รายละเอียด</h3><button type="button" class="btn small" id="btnClose">ปิด</button></header>
+    <div class="content">
+      <div class="field"><label for="fTopic">หัวข้อ</label><input type="text" id="fTopic"></div>
+      <div class="dgrid">
+        <div class="field"><label for="fMeasure">มาตรการป้องกัน</label><textarea id="fMeasure"></textarea></div>
+        <div class="field"><label for="fKpi">ตัวชี้วัด</label><textarea id="fKpi"></textarea></div>
+      </div>
+      <div class="dgrid">
+        <div class="field"><label>ความถี่ (รวมผลลัพธ์ทุกปีงบอัตโนมัติ)</label><div class="autofreq" id="fFreq"></div></div>
+        <div class="field"><label for="fSev">ระดับที่ประเมิน (A–I) ใช้คำนวณผลกระทบ</label><select id="fSev"></select></div>
+      </div>
+      <fieldset class="resset"><legend>ผลลัพธ์รายปีงบประมาณ</legend>
+        <div id="resFields" class="resgrid"></div>
+        <div class="addyear"><label for="newYear">เพิ่มปีงบ</label><input type="number" id="newYear" min="2500" max="2700" step="1"><button type="button" class="btn small" id="btnAddYear">+ เพิ่มปี</button></div>
+      </fieldset>
+    </div>
+    <footer><div class="confirm" id="delWrap"></div><div class="r"><button type="button" class="btn" id="btnCancel">ยกเลิก</button><button type="submit" class="btn primary" id="btnSave">บันทึกลงชีต</button></div></footer>
+  </form>
+</dialog>
+<div class="toast" id="toast" hidden></div>
+<script>
+// ===== ตั้งค่า: URL ของ Apps Script Web App (โครงการ "Risk Profile") =====
+const API_URL = 'https://script.google.com/macros/s/AKfycbz17zrUZt3o67i8SLU59e9PI3FyGz-cF6ulQRsYE9Df0dKc6_n-bBOtVemC4CgS0qsi/exec';
+
+const LEVELS = {
+  low:  {th:"ต่ำ", en:"Low", cls:"lv-low", rs:"rs-low", owner:"ผู้ปฏิบัติงาน / หัวหน้าเวร", time:"รายงานในระบบภายในเวร",
+         acts:["ยอมรับความเสี่ยงได้ จัดการตามระบบงานปกติ","บันทึกรายงานอุบัติการณ์ในระบบ","หัวหน้าหน่วยทบทวนแนวโน้มรายไตรมาส"]},
+  mod:  {th:"ปานกลาง", en:"Moderate", cls:"lv-mod", rs:"rs-mod", owner:"หัวหน้าหน่วยไตเทียม", time:"รายงานภายใน 24 ชั่วโมง ทบทวนภายใน 7 วัน",
+         acts:["ทบทวนสาเหตุในหน่วยงาน","กำหนดมาตรการควบคุมและสื่อสารแก่ผู้ปฏิบัติงาน","ติดตามผลลัพธ์รายเดือน"]},
+  high: {th:"สูง", en:"High", cls:"lv-high", rs:"rs-high", owner:"หัวหน้าหน่วย ร่วมกับหัวหน้ากลุ่มการพยาบาล", time:"รายงานทันทีหรือภายในเวร ทบทวนเชิงระบบภายใน 7 วัน",
+         acts:["ทบทวนหาสาเหตุราก (RCA)","จัดทำแผนลดความเสี่ยง กำหนดผู้รับผิดชอบและกำหนดเสร็จ","รายงานคณะกรรมการบริหารความเสี่ยง","ติดตามผลต่อเนื่องจนความเสี่ยงลดระดับ"]},
+  ext:  {th:"สูงมาก", en:"Extreme", cls:"lv-ext", rs:"rs-ext", owner:"ผู้บริหารระดับสูง / ทีมนำสถาบัน", time:"รายงานผู้บริหารทันที ทบทวน RCA ภายใน 72 ชั่วโมง",
+         acts:["แก้ไขเฉพาะหน้าทันทีเพื่อความปลอดภัยของผู้ป่วย","รายงานผู้บริหารและคณะกรรมการบริหารความเสี่ยงทันที","ทบทวน RCA แบบสหสาขาวิชาชีพ","ปรับระบบงานและติดตามผลจนมั่นใจว่าไม่เกิดซ้ำ"]}
+};
+const TH2KEY = {"ต่ำ":"low","ปานกลาง":"mod","สูง":"high","สูงมาก":"ext"};
+const CONS = [
+  {n:1, sev:"A–B", money:"≤ 1,000"},
+  {n:2, sev:"C–D", money:"1,001 – 10,000"},
+  {n:3, sev:"E",   money:"10,001 – 100,000"},
+  {n:4, sev:"F–G", money:"100,001 – 1,000,000"},
+  {n:5, sev:"H–I", money:"≥ 1,000,000"}
+];
+const LIKE = [
+  {n:5, year:"≥ 40 ครั้ง/ปี",  q:"5 ครั้ง/3 เดือน"},
+  {n:4, year:"31–39 ครั้ง/ปี", q:"4 ครั้ง/3 เดือน"},
+  {n:3, year:"24–30 ครั้ง/ปี", q:"3 ครั้ง/3 เดือน"},
+  {n:2, year:"16–23 ครั้ง/ปี", q:"2 ครั้ง/3 เดือน"},
+  {n:1, year:"< 16 ครั้ง/ปี",  q:"1 ครั้ง/3 เดือน"}
+];
+const MAP = {
+  5:{1:"mod",2:"high",3:"ext",4:"ext",5:"ext"},
+  4:{1:"mod",2:"high",3:"ext",4:"ext",5:"ext"},
+  3:{1:"low",2:"mod", 3:"high",4:"ext",5:"ext"},
+  2:{1:"low",2:"mod", 3:"mod", 4:"high",5:"high"},
+  1:{1:"low",2:"low", 3:"mod", 4:"high",5:"ext"}
+};
+const SEV = [
+  ["A","เหตุการณ์ซึ่งมีโอกาสก่อให้เกิดความคลาดเคลื่อน",1],
+  ["B","เกิดความคลาดเคลื่อนขึ้นแต่ยังไม่ถึงผู้ป่วย",1],
+  ["C","เกิดกับผู้ป่วยแต่ไม่ทำให้ผู้ป่วยได้รับอันตราย",2],
+  ["D","เกิดกับผู้ป่วย ส่งผลให้ต้องเฝ้าระวังต่อ",2],
+  ["E","เกิดกับผู้ป่วย เป็นอันตรายชั่วคราวและมีการบำบัดรักษา",3],
+  ["F","เกิดกับผู้ป่วย เป็นอันตรายชั่วคราวและนอนโรงพยาบาลนานขึ้น",4],
+  ["G","เกิดกับผู้ป่วย ส่งผลให้เกิดอันตรายถาวรแก่ผู้ป่วย",4],
+  ["H","เกิดกับผู้ป่วย ส่งผลให้ต้องทำการช่วยชีวิต",5],
+  ["I","เกิดกับผู้ป่วย เป็นสาเหตุของการเสียชีวิต",5]
+];
+// ตัวอย่างสำรอง ใช้เมื่อยังเชื่อมต่อชีตไม่ได้เท่านั้น
+const DEFAULT_TOPICS = ['ข้อร้องเรียนจากผู้รับบริการ','ตัวกรองมีสาร Peracitic ตกค้าง','การใช้ตัวกรองสลับคน','การได้รับยาและสารน้ำไม่ถูกต้อง','การคิดค่าใช้จ่ายในโปรแกรมไม่ถูกต้อง','การบาดเจ็บจากการแทงเส้นเลือด','เกิดปฏิกิริยาจากการให้เลือด','เกิดปฏิกิริยาจากการให้ยาหรือสารน้ำ','A-V เลื่อนหลุด','เกิดการหลุดของข้อต่อต่างๆ ของสาย Blood line','เกิดการแตกของ Fistular aneurysm','เครื่องไตเทียมไม่พร้อมใช้งาน','ระบบน้ำไม่พร้อมใช้งาน','ระบบน้ำ RO มีสารปนเปื้อนเกินมาตรฐาน','ระบบน้ำ RO เกิดการแตกรั่ว','Air embolism','บุคลากรได้รับบาดเจ็บจากการปฏิบัติงาน','บุคลากรถูกของมีคม/เข็มตำ/สัมผัสเลือด/สารคัดหลั่งกรเด็นเข้าเยื่อบุหรือผิวหนังที่มีบาดแผล','Sudden death indialysispa patiens'];
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let selL = 3, selC = 3;
+let ROWS = [], ONLINE = false, CUR_FY = null;
+const RES = "ผลลัพธ์ ปีงบ ";
+const SEV2C = {A:1,B:1,C:2,D:2,E:3,F:4,G:4,H:5,I:5};
+const TEXT_FIELDS = ["หัวข้อ","มาตรการป้องกัน","ตัวชี้วัด","ความถี่"];
+function curFyLocal(){ const d=new Date(); return d.getFullYear()+543+(d.getMonth()>=9?1:0); }
+function years3(){ const b = CUR_FY || curFyLocal(); return [b-2, b-1, b]; }
+
+/* ---------- server ---------- */
+async function api(action, payload){
+  if (!API_URL || !API_URL.startsWith('https://')) throw new Error('ยังไม่ได้ตั้งค่า URL ของ Apps Script');
+  let res, lastErr;
+  const tries = action === 'list' ? 3 : 1;
+  let data;
+  for (let i=0; i<tries; i++){
+    try {
+      if (action === 'list') res = await fetch(API_URL + '?action=list&t=' + Date.now(), {redirect:'follow', cache:'no-store'});
+      else res = await fetch(API_URL, {method:'POST', redirect:'follow', body: JSON.stringify(Object.assign({action}, payload||{}))});
+      const txt = await res.text();
+      try { data = JSON.parse(txt); lastErr = null; break; }
+      catch(x){ lastErr = new Error('Apps Script ตอบกลับไม่ถูกต้อง (เซิร์ฟเวอร์ Google ไม่ว่างหรือหมดเวลา กด "โหลดข้อมูลใหม่" อีกครั้ง)'); }
+    } catch(e){ lastErr = new Error('ติดต่อ Apps Script ไม่ได้ (ตรวจสอบอินเทอร์เน็ต หรือเครือข่ายที่บล็อก script.google.com)'); }
+    if (i < tries-1) await new Promise(r=>setTimeout(r, 2000*(i+1)));
+  }
+  if (lastErr) throw lastErr;
+  if (!data.ok) throw new Error(data.error || 'บันทึกไม่สำเร็จ');
+  return data;
+}
+function setStatus(kind, text){ $("status").innerHTML = `<span class="dot ${kind}"></span><span>${esc(text)}</span>`; }
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true, 2600); }
+let LINKS = {};
+function setLinks(list){ LINKS = {}; (list||[]).forEach(l=>{ if(l.key) LINKS[l.key]=String(l.no); }); }
+function incKey(r){ return String(r.reportDateIso||r.reportDate||'').trim() + '|' + String(r.details||'').trim().slice(0,120); }
+const SEV_ORDER = "ABCDEFGHI12345";
+/** นับอุบัติการณ์จากทะเบียนความเสี่ยงที่เชื่อมกับหัวข้อ Risk Profile (รวมทุกปี) */
+function incCounts(no){
+  const rows = (window.INC && INC.rows()) || [];
+  const by = {}; let total = 0;
+  rows.forEach(r=>{ if (LINKS[incKey(r)] === String(no)) { const k=String(r.severity||'?').trim().toUpperCase(); by[k]=(by[k]||0)+1; total++; } });
+  return {total, by};
+}
+/** ความถี่ = ผลรวมตัวเลขในคอลัมน์ผลลัพธ์ทุกปีงบ */
+function numOf(v){ const m = String(v==null?'':v).replace(/,/g,'').match(/-?\d+(\.\d+)?/); return m ? parseFloat(m[0]) : 0; }
+function yearSum(r){ return Object.keys(r||{}).filter(k=>k.indexOf(RES)===0).reduce((s,k)=>s+numOf(r[k]),0); }
+function chipClass(k){ return /^[A-I]$/.test(k) ? sevClass(k) : (/^[1-5]$/.test(k) ? "s"+k : ""); }
+function applyData(d, rerender, fromCache){
+  if (!fromCache) cacheSet('list', d);
+  ROWS = d.rows || []; ONLINE = true; CUR_FY = d.fy || curFyLocal(); YEARS = d.years || [];
+  if (d.links) setLinks(d.links);
+  if (window.INC) INC.refreshStats();
+  const t = new Date();
+  setStatus("ok", `เชื่อมต่อชีตแล้ว · ${ROWS.length} หัวข้อ · ปีงบปัจจุบัน ${CUR_FY} · อัปเดต ${t.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})} น.`);
+  if (rerender !== false) renderRegister();
+}
+/* ---------- แคชในเบราว์เซอร์: แสดงข้อมูลล่าสุดทันที แล้วค่อยอัปเดตจากชีต ---------- */
+function cacheGet(k){ try { const v = localStorage.getItem('rp_cache_' + k); return v ? JSON.parse(v) : null; } catch(e){ return null; } }
+function cacheSet(k, v){ try { localStorage.setItem('rp_cache_' + k, JSON.stringify({t: Date.now(), d: v})); } catch(e){} }
+function ago(t){ const m = Math.round((Date.now() - t) / 60000); return m < 1 ? 'เมื่อสักครู่' : m < 60 ? m + ' นาทีที่แล้ว' : Math.round(m/60) + ' ชั่วโมงที่แล้ว'; }
+window.cacheGet = cacheGet; window.cacheSet = cacheSet; window.ago = ago;
+
+async function load(){
+  const c = cacheGet('list');
+  if (c && c.d && !ROWS.length) {
+    applyData(c.d, true, true);
+    setStatus("busy", "แสดงข้อมูลที่บันทึกไว้ (" + ago(c.t) + ") · กำลังอัปเดตจากชีต…");
+  }
+  if (!(c && c.d)) { setStatus("busy", "กำลังโหลดข้อมูลจากชีต… (ครั้งแรกอาจใช้เวลา 10–30 วินาที)"); document.querySelector(".reg-wrap").classList.add("loading"); }
+  try { const d = await api('list'); applyData(d); document.querySelector(".reg-wrap").classList.remove("loading"); }
+  catch(e){
+    document.querySelector(".reg-wrap").classList.remove("loading");
+    if (c && c.d) { setStatus("err", "อัปเดตจากชีตไม่สำเร็จ แสดงข้อมูลที่บันทึกไว้ (" + ago(c.t) + ") · กด “โหลดข้อมูลใหม่” อีกครั้ง"); return; }
+    ONLINE = false;
+    if (!ROWS.length) ROWS = DEFAULT_TOPICS.map((t,i)=>({"ลำดับที่":String(i+1),"หัวข้อ":t}));
+    if (window.INC) INC.refreshStats();
+    setStatus("err", "เชื่อมต่อชีตไม่สำเร็จ: " + e.message + " (แก้ไขไม่ได้จนกว่าจะเชื่อมต่อ)");
+    renderRegister();
+  }
+}
+
+/* ---------- matrix / calc / refs / levels ---------- */
+function buildMatrix(){
+  let h = `<thead>
+  <tr><th class="corner" colspan="3" data-span3></th><th class="axis" colspan="5">ระดับผลกระทบ Consequence (Impact)</th></tr>
+  <tr><th colspan="3" data-span3>คะแนน</th>${CONS.map(c=>`<th class="cons-no">${c.n}</th>`).join("")}</tr>
+  <tr><th colspan="3" data-span3>ระดับความรุนแรง</th>${CONS.map(c=>`<th>${c.sev}</th>`).join("")}</tr>
+  <tr><th>คะแนน</th><th class="lk-h">โอกาสที่จะเกิดขึ้นในอนาคต</th><th class="lk-h">ความถี่ที่เกิดขึ้นจริง</th>${CONS.map(c=>`<th>${c.money}</th>`).join("")}</tr>
+  </thead><tbody>`;
+  LIKE.forEach(l=>{
+    h += `<tr><th class="lk-no">${l.n}</th><td class="lk-txt">โอกาสเกิด ${l.year}</td><td class="lk-txt">${l.q}</td>`;
+    CONS.forEach(c=>{
+      const lv = LEVELS[MAP[l.n][c.n]];
+      h += `<td class="pad"><button type="button" class="cell ${lv.cls}" data-l="${l.n}" data-c="${c.n}"
+        aria-label="โอกาสเกิด ${l.n} ผลกระทบ ${c.n} คะแนน ${l.n*c.n} ระดับ${lv.th}" aria-pressed="false">
+        <b>${l.n*c.n}</b><span>(${lv.th} - ${lv.en})</span></button></td>`;
+    });
+    h += `</tr>`;
+  });
+  $("matrixTable").innerHTML = h + `</tbody>`;
+  const mq = matchMedia("(max-width:560px)");
+  const fit = ()=>document.querySelectorAll("#matrixTable [data-span3]").forEach(th=>th.colSpan = mq.matches ? 1 : 3);
+  fit(); mq.addEventListener ? mq.addEventListener("change", fit) : mq.addListener(fit);
+  $("matrixTable").addEventListener("click", e=>{
+    const b = e.target.closest(".cell"); if(!b) return;
+    selL = +b.dataset.l; selC = +b.dataset.c; sync();
+  });
+}
+function optsL(){ return LIKE.map(l=>`<option value="${l.n}">${l.n} — ${l.year} (${l.q})</option>`).join(""); }
+function optsC(){ return CONS.map(c=>`<option value="${c.n}">${c.n} — ระดับ ${c.sev} / ${c.money} บาท</option>`).join(""); }
+function buildSelects(){
+  $("selL").innerHTML = optsL(); $("selC").innerHTML = optsC();
+  $("selL").addEventListener("change", e=>{selL=+e.target.value; sync()});
+  $("selC").addEventListener("change", e=>{selC=+e.target.value; sync()});
+}
+function sync(){
+  $("selL").value = selL; $("selC").value = selC;
+  document.querySelectorAll(".cell").forEach(b=>b.setAttribute("aria-pressed", (+b.dataset.l===selL && +b.dataset.c===selC) ? "true":"false"));
+  const lv = LEVELS[MAP[selL][selC]], c = CONS.find(x=>x.n===selC), l = LIKE.find(x=>x.n===selL);
+  const r = $("result"); r.className = "result " + lv.rs;
+  r.innerHTML = `<div class="score">${selL*selC}</div><div class="lv">ระดับ${lv.th} (${lv.en})</div>
+    <div>โอกาสเกิด ${selL} (${l.year}) × ผลกระทบ ${selC} (ระดับ ${c.sev})</div>
+    <div><strong>ผู้รับผิดชอบ:</strong> ${lv.owner}</div><div><strong>กรอบเวลา:</strong> ${lv.time}</div>`;
+}
+function buildRefs(){
+  let h = `<thead><tr><th>คะแนน</th><th>ระดับ</th><th>ความรุนแรงของอุบัติการณ์</th></tr></thead><tbody>`, prev = 0;
+  SEV.forEach(([code,txt,n])=>{
+    const c = CONS.find(x=>x.n===n);
+    h += `<tr class="${n!==prev && prev? 'grp':''}">${n!==prev?`<td class="n" rowspan="${SEV.filter(s=>s[2]===n).length}">${n}<div style="font-weight:400;font-size:.75rem;color:var(--muted)">${c.money}</div></td>`:''}<td class="code">${code}</td><td>${txt}</td></tr>`;
+    prev = n;
+  });
+  $("consTable").innerHTML = h + `</tbody>`;
+  $("lkTable").innerHTML = `<thead><tr><th>คะแนน</th><th>โอกาสที่จะเกิดขึ้นในอนาคต</th><th>ความถี่ที่เกิดขึ้นจริง</th></tr></thead><tbody>` +
+    LIKE.map(l=>`<tr><td class="n">${l.n}</td><td>${l.year}</td><td>${l.q}</td></tr>`).join("") + `</tbody>`;
+}
+function buildLevels(){
+  $("levelCards").innerHTML = ["ext","high","mod","low"].map(k=>{
+    const lv = LEVELS[k], cells = [];
+    LIKE.forEach(l=>CONS.forEach(c=>{ if(MAP[l.n][c.n]===k) cells.push({s:l.n*c.n, t:`${l.n}×${c.n}`}); }));
+    const sc = cells.map(x=>x.s);
+    return `<article class="lvcard">
+      <div class="top ${lv.cls}"><h3>${lv.th} · ${lv.en}</h3><small>${cells.length} ช่อง · คะแนน ${Math.min(...sc)}–${Math.max(...sc)}</small></div>
+      <div class="body"><dl><dt>ผู้รับผิดชอบ</dt><dd>${lv.owner}</dd><dt>กรอบเวลา</dt><dd>${lv.time}</dd></dl>
+        <ul>${lv.acts.map(a=>`<li>${a}</li>`).join("")}</ul>
+        <div><div style="color:var(--muted);font-size:.8rem;margin-bottom:4px">ตำแหน่งในตาราง (โอกาสเกิด × ผลกระทบ)</div>
+        <div class="cells">${cells.map(x=>`<span class="chip">${x.t} = ${x.s}</span>`).join("")}</div></div></div></article>`;
+  }).join("");
+}
+
+
+/* ---------- register (compact table + modal) ---------- */
+let YEARS = [];
+const EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/><path d="M14.5 5.5l3 3"/></svg>';
+function sevClass(v){ const c = SEV2C[v]; return c ? "s"+c : ""; }
+function txt(v){ return v ? `<div class="clamp">${esc(v)}</div>` : `<span class="empty">—</span>`; }
+function renderRegister(){
+  const ys = years3();
+  $("resYears").innerHTML = ys.map(y=>`<th title="ผลลัพธ์ ปีงบประมาณ ${y}">${String(y).slice(-2)}</th>`).join("");
+  $("regBody").innerHTML = ROWS.map(r=>{
+    const no = esc(r["ลำดับที่"]);
+    const sev = String(r["ระดับ"]||"").trim().toUpperCase(), tot = yearSum(r);
+    return `<tr data-open="${no}">
+      <td class="no">${no}</td>
+      <td class="topic">${txt(r["หัวข้อ"])}</td>
+      <td class="c-meas">${txt(r["มาตรการป้องกัน"])}</td>
+      <td class="c-kpi">${txt(r["ตัวชี้วัด"])}</td>
+      <td class="c-freq freq">${tot ? `<b>${tot}</b><small>ครั้ง</small>` : `<span class="empty">0</span>`}</td>
+      <td class="lv">${sev ? `<span class="sevchip ${sevClass(sev)}" title="${esc((SEV.find(x=>x[0]===sev)||["",""])[1])}">${sev}</span>` : `<span class="empty">—</span>`}</td>
+      ${ys.map(y=>`<td class="res">${txt(r[RES+y])}</td>`).join("")}
+      <td class="act"><button type="button" class="eyebtn" data-open="${no}" aria-label="แก้ไขลำดับที่ ${no}" title="แก้ไข">${EYE}</button></td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="10" class="help" style="padding:20px;text-align:center">ยังไม่มีรายการ</td></tr>`;
+}
+$("regBody").addEventListener("click", e=>{ const t=e.target.closest("[data-open]"); if(t) openEdit(t.dataset.open); });
+
+/* ---------- modal card ---------- */
+let editingNo = null;
+function allYears(r){
+  const set = new Set(years3());
+  (YEARS||[]).forEach(y=>set.add(+y));
+  Object.keys(r||{}).forEach(k=>{ if(k.indexOf(RES)===0){ const y=+k.slice(RES.length); if(y>2400) set.add(y);} });
+  return [...set].sort((a,b)=>b-a);
+}
+function yearField(y, val){
+  return `<div class="field"><label for="fRes${y}">ปีงบ ${y} ${y===CUR_FY?'<span class="cur-tag">(ปัจจุบัน)</span>':''}</label><textarea id="fRes${y}" data-y="${y}">${esc(val||"")}</textarea></div>`;
+}
+function openEdit(no){
+  if(!ONLINE){ toast("ยังโหลดข้อมูลจากชีตไม่เสร็จ กรุณารอสักครู่"); return; }
+  const r = no==null ? {} : ROWS.find(x=>String(x["ลำดับที่"])===String(no)); if(!r) return;
+  editingNo = no==null ? null : String(no);
+  $("dlgTitle").textContent = editingNo ? `แก้ไข ลำดับที่ ${no}` : "เพิ่มหัวข้อใหม่";
+  $("fTopic").value = r["หัวข้อ"]||""; $("fMeasure").value = r["มาตรการป้องกัน"]||"";
+  $("fKpi").value = r["ตัวชี้วัด"]||"";
+
+  $("fSev").innerHTML = `<option value="">— ไม่ระบุ —</option>` + SEV.map(([c,t])=>`<option value="${c}">${c} — ${esc(t)}</option>`).join("");
+  $("fSev").value = String(r["ระดับ"]||"").trim().toUpperCase();
+  const ys = allYears(r);
+  $("resFields").innerHTML = ys.map(y=>yearField(y, r[RES+y])).join("");
+  $("newYear").value = Math.max(...ys) + 1;
+  updFreq();
+  $("delWrap").innerHTML = editingNo ? `<button type="button" class="btn danger" id="btnDel">ลบหัวข้อนี้</button>` : "";
+  if (editingNo) $("btnDel").onclick = askDelete;
+  $("dlg").showModal();
+}
+$("btnAddYear").addEventListener("click", ()=>{
+  const y = parseInt($("newYear").value,10);
+  if (!(y>=2500 && y<=2700)){ toast("กรุณาระบุปีงบประมาณเป็นพุทธศักราช เช่น 2570"); return; }
+  if ($("fRes"+y)){ $("fRes"+y).focus(); toast("มีปีงบ "+y+" อยู่แล้ว"); return; }
+  const cur = [...document.querySelectorAll("#resFields textarea")].map(t=>({y:+t.dataset.y, v:t.value}));
+  cur.push({y, v:""}); cur.sort((a,b)=>b.y-a.y);
+  $("resFields").innerHTML = cur.map(o=>yearField(o.y, o.v)).join("");
+  $("fRes"+y).focus(); updFreq();
+  $("newYear").value = Math.max(...cur.map(o=>o.y)) + 1;
+});
+function updFreq(){
+  const parts = [...document.querySelectorAll("#resFields textarea")].map(t=>({y:t.dataset.y, n:numOf(t.value)})).sort((a,b)=>a.y-b.y);
+  const sum = parts.reduce((s,p)=>s+p.n,0);
+  $("fFreq").innerHTML = `<b>${sum}</b> ครั้ง <small style="color:var(--muted)">(${parts.map(p=>String(p.y).slice(-2)+": "+p.n).join(" + ")})</small>`;
+  return sum;
+}
+$("resFields").addEventListener("input", updFreq);
+function askDelete(){
+  $("delWrap").innerHTML = `<span>ยืนยันลบ?</span><button type="button" class="btn danger small" id="delYes">ลบ</button><button type="button" class="btn small" id="delNo">ไม่ลบ</button>`;
+  $("delNo").onclick = ()=>{ $("delWrap").innerHTML = `<button type="button" class="btn danger" id="btnDel">ลบหัวข้อนี้</button>`; $("btnDel").onclick = askDelete; };
+  $("delYes").onclick = async ()=>{
+    try{ setStatus("busy","กำลังลบ…"); applyData(await api('deleteRow', {no: editingNo})); $("dlg").close(); toast("ลบหัวข้อแล้ว"); }
+    catch(err){ toast("ลบไม่สำเร็จ: "+err.message); }
+  };
+}
+$("frm").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const topic = $("fTopic").value.trim(); if(!topic){ toast("กรุณาระบุหัวข้อ"); $("fTopic").focus(); return; }
+  const sev = $("fSev").value;
+  const row = {"หัวข้อ": topic, "มาตรการป้องกัน": $("fMeasure").value.trim(), "ตัวชี้วัด": $("fKpi").value.trim(), "ความถี่": "0", "ระดับ": sev, "ผลกระทบ (C)": sev ? SEV2C[sev] : ""};
+  document.querySelectorAll("#resFields textarea").forEach(t=>row[RES+t.dataset.y]=t.value.trim());
+  row["ความถี่"] = String(updFreq());
+  const btn = $("btnSave"); btn.disabled = true; btn.textContent = "กำลังบันทึก…";
+  try{
+    if (editingNo){ row["ลำดับที่"] = editingNo; applyData(await api('saveRow', {row})); }
+    else applyData(await api('addRow', {row}));
+    $("dlg").close(); toast("บันทึกลงชีตเรียบร้อย");
+  }catch(err){ toast("บันทึกไม่สำเร็จ: " + err.message); }
+  finally{ btn.disabled = false; btn.textContent = "บันทึกลงชีต"; }
+});
+$("btnCancel").addEventListener("click", ()=>$("dlg").close());
+$("btnClose").addEventListener("click", ()=>$("dlg").close());
+$("btnAdd").addEventListener("click", ()=>openEdit(null));
+$("btnReload").addEventListener("click", load);
+$("sevLegend").innerHTML = "ระดับ: " + [["A–B","var(--low)"],["C–D","var(--mod)"],["E","var(--high)"],["F–I","var(--ext)"]].map(([t,c])=>`<span><i style="background:${c}"></i>${t}</span>`).join("") + ` · ความหมายของระดับ A–I ดูที่ “เกณฑ์การให้คะแนน” ด้านล่าง`;
+
+window.RP = { api, render: ()=>renderRegister(), rows: ()=>ROWS, yearSum };
+
+/* ---------- init ---------- */
+buildMatrix(); buildSelects(); buildRefs(); buildLevels(); sync();
+renderRegister();
+load();
+
+/* ================= ทะเบียนความเสี่ยง (อุบัติการณ์) ================= */
+(function(){
+  // ===== ลิงก์ Web App ของ Google Apps Script (ทะเบียนความเสี่ยง) =====
+  // ใช้ลิงก์ Web App เดียวกับตาราง Risk Profile (โค้ด GS ไฟล์เดียว)
+  const API_URL = 'https://script.google.com/macros/s/AKfycbz17zrUZt3o67i8SLU59e9PI3FyGz-cF6ulQRsYE9Df0dKc6_n-bBOtVemC4CgS0qsi/exec';
+  const MAX_SIDE = 1600, MAX_FILE_MB = 20, PAGE_SIZE = 20;
+
+  // ระดับความรุนแรง: สีพาสเทล ไอคอน และคำจำง่ายตาม สรพ.
+  const LEVELS = {
+    A:{c:'#d1fae5',d:'#047857',i:'fa-seedling',     t:'เกิดที่นี่'},
+    B:{c:'#ccfbf1',d:'#0f766e',i:'fa-leaf',         t:'เกิดที่ไกล'},
+    C:{c:'#e0f2fe',d:'#0369a1',i:'fa-face-smile',   t:'เกิดกับใคร'},
+    D:{c:'#e0e7ff',d:'#4338ca',i:'fa-eye',          t:'ให้ระวัง'},
+    E:{c:'#fef9c3',d:'#a16207',i:'fa-kit-medical',  t:'ต้องรักษา'},
+    F:{c:'#ffedd5',d:'#c2410c',i:'fa-bandage',      t:'เยียวยานาน'},
+    G:{c:'#fce7f3',d:'#be185d',i:'fa-wheelchair',   t:'ต้องพิการ'},
+    H:{c:'#ffe4e6',d:'#be123c',i:'fa-heart-pulse',  t:'ต้องการปั๊ม'},
+    I:{c:'#f3e8ff',d:'#7e22ce',i:'fa-dove',         t:'จำใจลา'},
+    '1':{c:'#dcfce7',d:'#15803d',i:'fa-circle-check',       t:'ไม่มีผลกระทบ'},
+    '2':{c:'#e0f2fe',d:'#0369a1',i:'fa-hand-holding-heart', t:'ควบคุมได้'},
+    '3':{c:'#fef9c3',d:'#a16207',i:'fa-screwdriver-wrench', t:'ต้องแก้ไข'},
+    '4':{c:'#ffedd5',d:'#c2410c',i:'fa-triangle-exclamation',t:'ไม่บรรลุผล'},
+    '5':{c:'#ffe4e6',d:'#be123c',i:'fa-fire-flame-curved',  t:'เสียหายร้ายแรง'}
+  };
+
+  let OPT = null, DATA = {columns:[], rows:[]}, filterSev = '', page = 1;
+  let images = [], files = [], editing = null, delTarget = null, highlightRow = null;
+  const $ = id => document.getElementById(id);
+  const f = $('incForm');
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
+  const setDates = () => ['reportDate','eventDate','foundDate'].forEach(n => f[n].value = today());
+  const thDate = iso => { if (!iso) return ''; const [y,m,d] = iso.split('-').map(Number);
+    return new Date(y, m-1, d).toLocaleDateString('th-TH', {day:'numeric', month:'short', year:'2-digit'}); };
+  setDates();
+
+  // ---------- เรียก API ----------
+  async function api(action, data){
+    let res, lastErr;
+    const tries = data === undefined ? 3 : 1;
+    for (let i = 0; i < tries; i++) {
+      try {
+        res = data === undefined
+          ? await fetch(API_URL + '?action=' + action + '&t=' + Date.now(), {cache:'no-store'})
+          : await fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action, data})});
+        lastErr = null; break;
+      } catch (e) { lastErr = e; if (i < tries-1) await new Promise(r => setTimeout(r, 1500*(i+1))); }
+    }
+    if (lastErr) throw new Error('ติดต่อ Apps Script ไม่ได้ (ตรวจสอบอินเทอร์เน็ต)');
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || 'เกิดข้อผิดพลาด');
+    return j.data;
+  }
+  function toast(text, ok = true){
+    const t = $('incToast'); t.className = 'itoast show ' + (ok ? 'ok' : 'bad');
+    t.querySelector('i').className = 'fa-solid ' + (ok ? 'fa-circle-check' : 'fa-circle-exclamation');
+    t.querySelector('span').textContent = text;
+    clearTimeout(t._h); t._h = setTimeout(() => t.className = 'itoast', 3500);
+  }
+
+  // ---------- ตัวเลือกดรอปดาวน์ (HRMS) ----------
+  const fillSelect = (id, items, ph) => $(id).innerHTML = `<option value="">${ph || '-- เลือก --'}</option>` + items.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('');
+  const fillList = (id, items) => $(id).innerHTML = items.map(x => `<option value="${esc(x)}"></option>`).join('');
+  const optC = cacheGet('incOpt');
+  const applyOpt = o => {
+    OPT = o;
+    fillSelect('selPlace', o.placeType);
+    fillSelect('selAff', o.affected);
+    fillSelect('selShift', o.shift, '-- เลือกเวร (หรือระบุเวลาในช่อง 12) --');
+    fillList('dlSource', o.source);
+    fillList('dlTopic', o.topic);
+    const n = o.severityNotes || {};
+    const opt = x => `<option value="${esc(x)}">${esc(x)}${n[x] ? ' : ' + esc(n[x]) : ''}</option>`;
+    $('selSev').innerHTML = '<option value="">-- เลือก --</option>' +
+      `<optgroup label="ด้านคลินิก (A–I)">${o.severity.filter(x => /^[A-I]$/.test(x)).map(opt).join('')}</optgroup>` +
+      `<optgroup label="ด้านทั่วไป (1–5)">${o.severity.filter(x => !/^[A-I]$/.test(x)).map(opt).join('')}</optgroup>`;
+    if (editing) fillForm(editing);
+  };
+  if (optC && optC.d) applyOpt(optC.d);
+  api('options').then(o => { cacheSet('incOpt', o); applyOpt(o); })
+    .catch(e => { if (!(optC && optC.d)) toast('โหลดตัวเลือกไม่สำเร็จ: ' + e.message, false); });
+
+  $('selSev').addEventListener('change', e => $('sevHint').textContent = ((OPT && OPT.severityNotes) || {})[e.target.value] || '');
+  const inTopic = $('inTopic');
+  inTopic.addEventListener('input', () => {
+    const ok = !inTopic.value || !OPT || OPT.topic.includes(inTopic.value) || (editing && editing.topic === inTopic.value);
+    inTopic.setCustomValidity(ok ? '' : 'กรุณาเลือกเรื่องอุบัติการณ์จากรายการของ HRMS');
+  });
+
+  // ---------- รูปภาพ / ไฟล์ ----------
+  function shrink(file){
+    return new Promise((res, rej) => {
+      const img = new Image(), url = URL.createObjectURL(file);
+      img.onload = () => {
+        const s = Math.min(1, MAX_SIDE / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width*s); c.height = Math.round(img.height*s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        const dataUrl = c.toDataURL('image/jpeg', 0.85);
+        res({name: file.name.replace(/\.[^.]+$/, '') + '.jpg', mimeType: 'image/jpeg', data: dataUrl.split(',')[1], preview: dataUrl});
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('อ่านรูปไม่ได้: ' + file.name)); };
+      img.src = url;
+    });
+  }
+  const readRaw = file => new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res({name: file.name, mimeType: file.type || 'application/octet-stream', data: String(r.result).split(',')[1]});
+    r.onerror = () => rej(new Error('อ่านไฟล์ไม่ได้: ' + file.name));
+    r.readAsDataURL(file);
+  });
+  async function addImages(list){ for (const x of list) { try { images.push(await shrink(x)); } catch(e){ toast(e.message, false); } } renderThumbs(); }
+  async function addFiles(list){
+    for (const x of list) {
+      if (x.size > MAX_FILE_MB*1024*1024) { toast(x.name + ' มีขนาดเกิน ' + MAX_FILE_MB + ' MB', false); continue; }
+      try { files.push(await readRaw(x)); } catch(e){ toast(e.message, false); }
+    }
+    renderThumbs();
+  }
+  function renderThumbs(){
+    const oldImg = (editing && editing.image && !images.length) ? `<div class="thumb old" title="รูปเดิม"><img src="${esc(editing.image)}"></div>` : '';
+    $('imgBox').innerHTML = oldImg + images.map((x,i) => `<div class="thumb"><img src="${x.preview}"><button type="button" onclick="INC.rmImg(${i})"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+    $('fileBox').innerHTML = files.map((x,i) => `<div class="thumb">${esc(x.name)}<button type="button" onclick="INC.rmFile(${i})"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+  }
+
+  // ---------- บันทึก / แก้ไข ----------
+  async function send(e){
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(f).entries());
+
+    data.images = images.map(({name, mimeType, data}) => ({name, mimeType, data}));
+    data.attachments = files;
+    if (editing) { data._row = editing._row; data._sig = editing.details; }
+    const btn = $('incBtn'); btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> <span>กำลังบันทึก...</span>';
+    try {
+      const r = await api(editing ? 'update' : 'submit', data);
+
+      toast(editing ? 'แก้ไขเรียบร้อยแล้ว' : `บันทึกเรียบร้อย · รูป ${r.images} · ไฟล์ ${r.files}`);
+      highlightRow = r.row;
+      resetForm();
+      await loadData();
+      $('tableCard').scrollIntoView({behavior:'smooth'});
+    } catch (err) {
+      toast('บันทึกไม่สำเร็จ: ' + err.message, false);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span>${editing ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล'}</span>`;
+    }
+  }
+  function resetForm(){
+    f.reset(); setDates(); editing = null; images = []; files = [];
+    $('sevHint').textContent = ''; $('editBar').classList.remove('show');
+    $('formTitle').textContent = 'บันทึกรายงานอุบัติการณ์';
+    $('incBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> <span>บันทึกข้อมูล</span>';
+    inTopic.setCustomValidity(''); renderThumbs();
+  }
+  const cancelEdit = () => resetForm();
+
+  function fillForm(r){
+    const setv = (n, v) => { if (f[n]) f[n].value = v || ''; };
+    ['unit','placeType','details','topic','severity','affected','shift','source','action'].forEach(k => {
+      const el = f[k];
+      if (el && el.tagName === 'SELECT' && r[k] && ![...el.options].some(o => o.value === r[k])) el.add(new Option(r[k], r[k]));
+      setv(k, r[k]);
+    });
+    ['reportDate','eventDate','foundDate'].forEach(k => setv(k, r[k + 'Iso']));
+    setv('time', (r.time || '').slice(0,5));
+
+    $('sevHint').textContent = ((OPT && OPT.severityNotes) || {})[r.severity] || '';
+  }
+  function startEdit(row){
+    const r = DATA.rows.find(x => x._row === row); if (!r) return;
+    closeM('mView');
+    editing = r; images = []; files = [];
+    fillForm(r); renderThumbs();
+    $('formTitle').textContent = 'แก้ไขรายงานอุบัติการณ์';
+    $('editText').textContent = 'กำลังแก้ไขรายการวันที่ ' + (thDate(r.reportDateIso) || r.reportDate) + ' · เพิ่มรูปใหม่จะแทนรูปเดิม';
+    $('editBar').classList.add('show');
+    $('incBtn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> <span>บันทึกการแก้ไข</span>';
+    f.scrollIntoView({behavior:'smooth'});
+  }
+
+  // ---------- ข้อมูล / สถิติ / ตาราง ----------
+  async function loadData(){
+    $('reloadIc').classList.add('spin');
+    const c = cacheGet('incData');
+    if (c && c.d && !DATA.rows.length) { DATA = c.d; renderStats(); renderTable(); $('statSrc').textContent += ' · ข้อมูลที่บันทึกไว้ ' + ago(c.t) + ' กำลังอัปเดต…'; }
+    try { DATA = await api('data'); cacheSet('incData', DATA); renderStats(); renderTable(); if (window.RP) RP.render(); }
+    catch (e) { if (c && c.d) { toast('อัปเดตทะเบียนความเสี่ยงไม่สำเร็จ แสดงข้อมูลที่บันทึกไว้', false); } else { $('tableBox').className = 'empty'; $('tableBox').textContent = 'โหลดข้อมูลไม่สำเร็จ: ' + e.message; } }
+    finally { $('reloadIc').classList.remove('spin'); }
+  }
+  function statCard(key, count){
+    const L = LEVELS[key];
+    return `<div class="stat ${filterSev === key ? 'on' : ''}" style="--c:${L.c};--d:${L.d}" onclick="INC.setFilter('${key}')" role="button" tabindex="0" aria-label="ระดับ ${key} ${count} เรื่อง">
+      <div class="lv">${key}</div>
+      <div class="top"><div class="ic"><i class="fa-solid ${L.i}"></i></div><div class="num">${count}<span>เรื่อง</span></div></div>
+      <div class="lb">ระดับ ${key} <small>· ${L.t}</small></div></div>`;
+  }
+  function renderStats(){
+    const cnt = {}, add = (k, n) => { k = String(k || '').trim().toUpperCase(); if (k && n) cnt[k] = (cnt[k] || 0) + n; };
+    // 1) ทะเบียนความเสี่ยง: 1 รายการ = 1 เรื่อง
+    DATA.rows.forEach(r => add(r.severity, 1));
+    const regN = DATA.rows.length;
+    // 2) ตาราง Risk Profile: ระดับ × ผลรวมผลลัพธ์ทุกปีงบ
+    let rpN = 0;
+    ((window.RP && RP.rows()) || []).forEach(r => { const n = RP.yearSum(r); if (r['ระดับ'] && n) { add(r['ระดับ'], n); rpN += n; } });
+    const sumOf = keys => keys.split('').reduce((s,k) => s + (cnt[k] || 0), 0);
+    $('statTotal').textContent = 'ทั้งหมด ' + (regN + rpN) + ' เรื่อง';
+    $('statSrc').textContent = `(ทะเบียนความเสี่ยง ${regN} + ตาราง Risk Profile ${rpN} · แตะการ์ดเพื่อกรองตารางทะเบียนความเสี่ยง)`;
+    $('statClinN').textContent = sumOf('ABCDEFGHI') + ' เรื่อง';
+    $('statGenN').textContent = sumOf('12345') + ' เรื่อง';
+    $('statsClin').innerHTML = 'ABCDEFGHI'.split('').map(k => statCard(k, cnt[k] || 0)).join('');
+    $('statsGen').innerHTML = '12345'.split('').map(k => statCard(k, cnt[k] || 0)).join('');
+  }
+  const FILTER_LABEL = {CLIN:'ด้านคลินิก', GEN:'ด้านทั่วไป', HIGH:'รุนแรง (E–I, 3–5)'};
+  function setFilter(k){
+    filterSev = (filterSev === k) ? '' : k; page = 1;
+    renderStats(); renderTable();
+    if (filterSev) $('tableCard').scrollIntoView({behavior:'smooth'});
+  }
+  function matchSev(sev){
+    const s = String(sev || '').toUpperCase();
+    if (!filterSev) return true;
+    if (filterSev === 'CLIN') return /^[A-I]$/.test(s);
+    if (filterSev === 'GEN') return /^[1-5]$/.test(s);
+    if (filterSev === 'HIGH') return /^[E-I3-5]$/.test(s);
+    return s === filterSev;
+  }
+  $('incQ').addEventListener('input', () => { page = 1; renderTable(); });
+
+  function renderTable(){
+    const q = $('incQ').value.trim().toLowerCase();
+    const rows = DATA.rows.filter(r => matchSev(r.severity) &&
+      (!q || [r.details, r.unit, r.topic, r.action].join(' ').toLowerCase().includes(q)));
+    $('countChip').textContent = rows.length + ' เรื่อง';
+    const fc = $('filterChip');
+    if (filterSev) { fc.classList.remove('hide'); fc.innerHTML = `<i class="fa-solid fa-filter"></i> ${FILTER_LABEL[filterSev] || 'ระดับ ' + filterSev} <button type="button" onclick="INC.setFilter('${filterSev}')"><i class="fa-solid fa-xmark"></i></button>`; }
+    else fc.classList.add('hide');
+
+    const box = $('tableBox');
+    if (!rows.length) { box.className = 'empty'; box.innerHTML = '<i class="fa-regular fa-folder-open" style="font-size:1.6rem"></i><br>ไม่มีรายการ'; $('moreBox').classList.add('hide'); return; }
+    const shown = rows.slice(0, page * PAGE_SIZE);
+    box.className = '';
+    box.innerHTML = `<table><thead><tr><th>วันที่</th><th>หน่วยงาน</th><th>รายละเอียดการเกิดเหตุ</th><th style="text-align:center">จัดการ</th></tr></thead><tbody>` +
+      shown.map(r => {
+        const L = LEVELS[String(r.severity || '').toUpperCase()];
+        const sev = r.severity ? `<span class="sev" style="${L ? `--c:${L.c};--d:${L.d}` : ''}">${esc(r.severity)}</span>` : '';
+        return `<tr class="${r._row === highlightRow ? 'new' : ''}">
+          <td class="date">${esc(thDate(r.reportDateIso) || r.reportDate)}</td>
+          <td class="unit">${esc(r.unit)}</td>
+          <td class="det"><div class="txt">${sev}${esc(r.details)}</div>${r.topic ? `<div class="topic">${esc(r.topic)}</div>` : ''}</td>
+          <td class="act">
+            <button type="button" class="ib v" title="ดู" onclick="INC.viewRow(${r._row})"><i class="fa-solid fa-eye"></i></button>
+            <button type="button" class="ib e" title="แก้ไข" onclick="INC.startEdit(${r._row})"><i class="fa-solid fa-pen"></i></button>
+            <button type="button" class="ib d" title="ลบ" onclick="INC.askDelete(${r._row})"><i class="fa-solid fa-trash"></i></button>
+          </td></tr>`;
+      }).join('') + '</tbody></table>';
+    $('moreBox').classList.toggle('hide', shown.length >= rows.length);
+    if (highlightRow) setTimeout(() => { highlightRow = null; document.querySelectorAll('#tableBox tr.new').forEach(t => t.classList.remove('new')); }, 4000);
+  }
+
+  // ---------- ดูรายละเอียด ----------
+  const openM = id => $(id).classList.add('show');
+  const closeM = id => $(id).classList.remove('show');
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeM('mView'); closeM('mDel'); } });
+  function viewRow(row){
+    const r = DATA.rows.find(x => x._row === row); if (!r) return;
+    $('viewBody').innerHTML = DATA.columns.map(c => {
+      let v = esc(r[c.key]);
+      if (c.key === 'image') v = r.image ? `<a href="${esc(r.image)}" target="_blank"><img src="${esc(r.image)}" alt="รูปภาพ"></a>` : '-';
+      else if (c.key === 'attachment') v = String(r.attachment || '').split(/\n+/).filter(Boolean).map((u,i) => `<a href="${esc(u)}" target="_blank"><i class="fa-solid fa-paperclip"></i> ไฟล์ ${i+1}</a>`).join('<br>') || '-';
+      else if (/Date$/.test(c.key)) v = esc(thDate(r[c.key + 'Iso']) || r[c.key]) || '-';
+      else if (c.key === 'severity' && r.severity) { const L = LEVELS[String(r.severity).toUpperCase()]; v = `<span class="sev" style="${L ? `--c:${L.c};--d:${L.d}` : ''}">${esc(r.severity)}</span>${L ? esc(L.t) : ''}`; }
+      return `<div class="k">${esc(c.title)}</div><div class="v">${v || '-'}</div>`;
+    }).join('');
+    $('viewEdit').onclick = () => startEdit(row);
+    openM('mView');
+  }
+
+  // ---------- ลบ (ใส่รหัสผ่าน) ----------
+  function askDelete(row){
+    const r = DATA.rows.find(x => x._row === row); if (!r) return;
+    delTarget = r;
+    $('delText').textContent = (thDate(r.reportDateIso) || r.reportDate) + ' · ' + String(r.details || '').slice(0, 60);
+    $('delPass').value = ''; $('delErr').textContent = '';
+    openM('mDel'); setTimeout(() => $('delPass').focus(), 50);
+  }
+  $('delPass').addEventListener('keydown', e => { if (e.key === 'Enter') doDelete(); });
+  async function doDelete(){
+    const pw = $('delPass').value;
+    if (!pw) { $('delErr').textContent = 'กรุณาใส่รหัสผ่าน'; return; }
+    const b = $('delBtn'); b.disabled = true; b.innerHTML = '<i class="fa-solid fa-spinner spin"></i> กำลังลบ...';
+    try {
+      await api('delete', {_row: delTarget._row, _sig: delTarget.details, password: pw});
+      closeM('mDel'); toast('ลบรายการเรียบร้อยแล้ว');
+
+      if (editing && editing._row === delTarget._row) resetForm();
+      await loadData();
+    } catch (e) {
+      $('delErr').textContent = e.message;
+    } finally {
+      b.disabled = false; b.innerHTML = '<i class="fa-solid fa-trash"></i> ลบรายการ';
+    }
+  }
+
+  window.INC = {
+    send, cancelEdit, rows: () => DATA.rows, refreshStats: () => renderStats(), addImages, addFiles, loadData, closeM, doDelete, setFilter, viewRow, startEdit, askDelete,
+    rmImg: i => { images.splice(i,1); renderThumbs(); },
+    rmFile: i => { files.splice(i,1); renderThumbs(); },
+    more: () => { page++; renderTable(); }
+  };
+  renderStats();
+  $('statSrc').textContent = '(กำลังโหลดข้อมูลจากชีต อาจใช้เวลา 10–30 วินาที…)';
+  loadData();
+})();
+</script>
+</body>
+</html>
